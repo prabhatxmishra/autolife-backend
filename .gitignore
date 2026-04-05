@@ -36,4 +36,8 @@ hs_err_pid*
 replay_pid*
 
 # Test output
+<<<<<<< HEAD
 surefire-reports/
+=======
+surefire-reports/
+>>>>>>> f8b11105e3f1005f8e46a476d373f196f0a3e467
