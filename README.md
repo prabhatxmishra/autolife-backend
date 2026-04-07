@@ -15,4 +15,4 @@ Production-grade Spring Boot backend for managing tasks, reminders, subscription
 - JPA / Hibernate
 
 ## 📌 Status
-🚧 In Progress (Day 0)
+🚧 In Progress (Day 1) => Added Tasks entity

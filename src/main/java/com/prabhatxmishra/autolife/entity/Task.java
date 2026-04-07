@@ -3,6 +3,7 @@ package com.prabhatxmishra.autolife.entity;
 import com.prabhatxmishra.autolife.enums.TaskPriority;
 import com.prabhatxmishra.autolife.enums.TaskStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "tasks")
 @Data
-public class Tasks {
+public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
