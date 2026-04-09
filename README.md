@@ -14,5 +14,4 @@ Production-grade Spring Boot backend for managing tasks, reminders, subscription
 - PostgreSQL
 - JPA / Hibernate
 
-## 📌 Status
-🚧 In Progress (Day 1) => Added Tasks entity
+
