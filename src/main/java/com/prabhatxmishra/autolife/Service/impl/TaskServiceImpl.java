@@ -6,6 +6,10 @@ import com.prabhatxmishra.autolife.Service.TaskService;
 import com.prabhatxmishra.autolife.entity.Task;
 import com.prabhatxmishra.autolife.enums.TaskStatus;
 import com.prabhatxmishra.autolife.repository.TaskRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -51,5 +55,11 @@ public class TaskServiceImpl implements TaskService {
         Task savedTask = taskRepository.save(task);
 
         return mapToResponse(savedTask);
+    }
+
+    @Override
+    public Page<TaskResponseDTO> getAllTasks(Pageable pageable) {
+        Page<Task> taskPage = taskRepository.findAll(pageable);
+        return taskPage.map(this::mapToResponse);
     }
 }
