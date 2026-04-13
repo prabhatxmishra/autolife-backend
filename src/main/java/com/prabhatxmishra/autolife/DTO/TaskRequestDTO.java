@@ -1,23 +1,22 @@
 package com.prabhatxmishra.autolife.DTO;
 
 import com.prabhatxmishra.autolife.enums.TaskPriority;
+import com.prabhatxmishra.autolife.enums.TaskStatus;
 import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
 public class TaskRequestDTO {
 
-   @NotBlank
    private String title;
 
    private String description;
 
-   @NotNull
    private TaskPriority priority;
 
-   @Future
+   private TaskStatus status;
+
+   @Future(message = "Due date must be in the future")
    private LocalDateTime dueDate;
 
    // No-args constructor
@@ -26,10 +25,12 @@ public class TaskRequestDTO {
 
    // All-args constructor
    public TaskRequestDTO(String title, String description,
-                         TaskPriority priority, LocalDateTime dueDate) {
+                         TaskPriority priority, TaskStatus status,
+                         LocalDateTime dueDate) {
       this.title = title;
       this.description = description;
       this.priority = priority;
+      this.status = status;
       this.dueDate = dueDate;
    }
 
@@ -57,6 +58,14 @@ public class TaskRequestDTO {
 
    public void setPriority(TaskPriority priority) {
       this.priority = priority;
+   }
+
+   public TaskStatus getStatus() {
+      return status;
+   }
+
+   public void setStatus(TaskStatus status) {
+      this.status = status;
    }
 
    public LocalDateTime getDueDate() {

@@ -4,6 +4,8 @@ package com.prabhatxmishra.autolife.Controller;
 import com.prabhatxmishra.autolife.DTO.TaskRequestDTO;
 import com.prabhatxmishra.autolife.DTO.TaskResponseDTO;
 import com.prabhatxmishra.autolife.Service.TaskService;
+import com.prabhatxmishra.autolife.enums.TaskPriority;
+import com.prabhatxmishra.autolife.enums.TaskStatus;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,16 +34,24 @@ public class TaskController {
     @GetMapping
     public Page<TaskResponseDTO> retrieveTasks(@PageableDefault(size = 10, sort = "createdAt",
                                                 direction = Sort.Direction.DESC)
-                                                   Pageable pageable)
+                                                   Pageable pageable, @RequestParam(required= false) TaskStatus status,
+                                               @RequestParam(required= false) TaskPriority priority)
     {
-        return taskService.getAllTasks(pageable);
+        return taskService.getAllTasks(pageable, status, priority);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<TaskResponseDTO> updateTasks(@PathVariable Long id,
-                                                       @RequestBody TaskRequestDTO request)
+                                                       @RequestBody @Valid TaskRequestDTO request)
     {
-        TaskResponseDTO response = taskService.updateTasks(id, request);
+        TaskResponseDTO response = taskService.updateTask(id, request);
        return ResponseEntity.ok((response));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTaskById(@PathVariable Long id)
+    {
+        taskService.deleteTask(id);
+        return ResponseEntity.noContent().build();
     }
 }

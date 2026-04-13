@@ -6,6 +6,7 @@ import com.prabhatxmishra.autolife.ExceptionHandling.BadRequestException;
 import com.prabhatxmishra.autolife.ExceptionHandling.ResourceNotFoundException;
 import com.prabhatxmishra.autolife.Service.TaskService;
 import com.prabhatxmishra.autolife.entity.Task;
+import com.prabhatxmishra.autolife.enums.TaskPriority;
 import com.prabhatxmishra.autolife.enums.TaskStatus;
 import com.prabhatxmishra.autolife.repository.TaskRepository;
 import org.springframework.data.domain.Page;
@@ -59,13 +60,23 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Page<TaskResponseDTO> getAllTasks(Pageable pageable) {
-        Page<Task> taskPage = taskRepository.findAll(pageable);
+    public Page<TaskResponseDTO> getAllTasks(Pageable pageable, TaskStatus status, TaskPriority priority) {
+        Page<Task> taskPage;
+
+        if (status != null && priority != null) {
+            taskPage = taskRepository.findByStatusAndPriority(status, priority, pageable);
+        } else if (status != null) {
+            taskPage = taskRepository.findByStatus(status, pageable);
+        } else if (priority != null) {
+            taskPage = taskRepository.findByPriority(priority, pageable);
+        } else {
+            taskPage = taskRepository.findAll(pageable);
+        }
         return taskPage.map(this::mapToResponse);
     }
 
     @Override
-    public TaskResponseDTO updateTasks(Long id, TaskRequestDTO request) {
+    public TaskResponseDTO updateTask(Long id, TaskRequestDTO request) {
         Task task=taskRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Task not found with id:" +id));
         if (request.getDueDate() != null &&
@@ -83,11 +94,24 @@ public class TaskServiceImpl implements TaskService {
             task.setPriority(request.getPriority());
         }
 
+        if (request.getStatus() != null) {
+            task.setStatus(request.getStatus());
+        }
+
         if (request.getDueDate() != null) {
             task.setDueDate(request.getDueDate());
         }
-
+        task.setUpdatedAt(LocalDateTime.now());
         taskRepository.save(task);
         return mapToResponse(task);
+    }
+
+    @Override
+    public void deleteTask(Long id)
+    {
+       Task task=taskRepository.findById(id).
+                orElseThrow(() ->new ResourceNotFoundException("Task with the given id not found"));
+
+        taskRepository.delete(task);
     }
 }
