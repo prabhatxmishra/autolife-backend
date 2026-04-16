@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
@@ -32,12 +34,15 @@ public class TaskController {
     }
 
     @GetMapping
-    public Page<TaskResponseDTO> retrieveTasks(@PageableDefault(size = 10, sort = "createdAt",
-                                                direction = Sort.Direction.DESC)
-                                                   Pageable pageable, @RequestParam(required= false) TaskStatus status,
-                                               @RequestParam(required= false) TaskPriority priority)
+    public Page<TaskResponseDTO> retrieveTasks(  @RequestParam(required = false) TaskStatus status,
+                                                 @RequestParam(required = false) TaskPriority priority,
+                                                 @RequestParam(required = false) LocalDateTime from,
+                                                 @RequestParam(required = false) LocalDateTime to,
+                                                 @RequestParam(required = false) String search,
+                                                 @PageableDefault(size = 10, sort = "createdAt",
+                                                 direction = Sort.Direction.DESC) Pageable pageable)
     {
-        return taskService.getAllTasks(pageable, status, priority);
+        return taskService.getAllTasks(status, priority,from,to,search, pageable);
     }
 
     @PatchMapping("/{id}")

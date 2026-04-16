@@ -5,16 +5,16 @@ import com.prabhatxmishra.autolife.DTO.TaskResponseDTO;
 import com.prabhatxmishra.autolife.ExceptionHandling.BadRequestException;
 import com.prabhatxmishra.autolife.ExceptionHandling.ResourceNotFoundException;
 import com.prabhatxmishra.autolife.Service.TaskService;
+import com.prabhatxmishra.autolife.Specification.TaskSpecification;
 import com.prabhatxmishra.autolife.entity.Task;
 import com.prabhatxmishra.autolife.enums.TaskPriority;
 import com.prabhatxmishra.autolife.enums.TaskStatus;
 import com.prabhatxmishra.autolife.repository.TaskRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -60,20 +60,18 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Page<TaskResponseDTO> getAllTasks(Pageable pageable, TaskStatus status, TaskPriority priority) {
-        Page<Task> taskPage;
+    public Page<TaskResponseDTO> getAllTasks(TaskStatus status, TaskPriority priority, LocalDateTime from, LocalDateTime to, String search, Pageable pageable) {
+        Specification<Task> spec = Specification
+                .where(TaskSpecification.hasStatus(status))
+                .and(TaskSpecification.hasPriority(priority))
+                .and(TaskSpecification.dueDateBetween(from, to))
+                .and(TaskSpecification.search(search));
 
-        if (status != null && priority != null) {
-            taskPage = taskRepository.findByStatusAndPriority(status, priority, pageable);
-        } else if (status != null) {
-            taskPage = taskRepository.findByStatus(status, pageable);
-        } else if (priority != null) {
-            taskPage = taskRepository.findByPriority(priority, pageable);
-        } else {
-            taskPage = taskRepository.findAll(pageable);
-        }
+        Page<Task> taskPage = taskRepository.findAll(spec, pageable);
+
         return taskPage.map(this::mapToResponse);
     }
+
 
     @Override
     public TaskResponseDTO updateTask(Long id, TaskRequestDTO request) {

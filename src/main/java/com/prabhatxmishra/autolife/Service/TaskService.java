@@ -7,9 +7,13 @@ import com.prabhatxmishra.autolife.enums.TaskStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
+
 public interface TaskService {
     TaskResponseDTO createTask(TaskRequestDTO request);
-    Page<TaskResponseDTO> getAllTasks(Pageable pageable, TaskStatus status, TaskPriority priority);
+    Page<TaskResponseDTO> getAllTasks(TaskStatus status, TaskPriority priority,LocalDateTime from,
+                                      LocalDateTime to,
+                                      String search,Pageable pageable);
     TaskResponseDTO updateTask(Long id, TaskRequestDTO request);
     void deleteTask(Long id);
 }
