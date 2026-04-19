@@ -36,26 +36,34 @@ public class TaskSpecification {
         return new Specification<Task>() {
             @Override
             public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                if (from == null && to == null) {
+                    return null;
+                }
+
                 if (from != null && to != null) {
                     return cb.between(root.get("dueDate"), from, to);
-                } else if (from != null) {
-                    return cb.greaterThanOrEqualTo(root.get("dueDate"), from);
-                } else {
-                    return cb.lessThanOrEqualTo(root.get("dueDate"), to);
                 }
+
+                if (from != null) {
+                    return cb.greaterThanOrEqualTo(root.get("dueDate"), from);
+                }
+
+                return cb.lessThanOrEqualTo(root.get("dueDate"), to);
             }
         };
     }
-
-    public static Specification<Task> search(String keyword)
-    {
-        return new Specification<Task>() {
-            @Override
-            public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                String pattern="%"+keyword.toLowerCase()+"%";
-                return cb.or( cb.like(cb.lower(root.get("title")), pattern),
-                        cb.like(cb.lower(root.get("description")), pattern));
+    public static Specification<Task> search(String keyword) {
+        return (root, query, cb) -> {
+            if (keyword == null || keyword.isBlank()) {
+                return null;
             }
+
+            String pattern = "%" + keyword.toLowerCase() + "%";
+
+            return cb.or(
+                    cb.like(cb.lower(root.get("title")), pattern),
+                    cb.like(cb.lower(root.get("description")), pattern)
+            );
         };
     }
 }
