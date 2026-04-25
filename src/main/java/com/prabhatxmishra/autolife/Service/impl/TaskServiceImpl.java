@@ -51,8 +51,14 @@ public class TaskServiceImpl implements TaskService {
     public TaskResponseDTO createTask(TaskRequestDTO request) {
         if (request.getDueDate() != null &&
                 request.getDueDate().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("Due date cannot be in the past");
-        } // Will add custom validation later
+            throw new BadRequestException("Due date cannot be in the past");
+        }
+
+        if (taskRepository.existsByTitleAndDueDate(
+                request.getTitle(), request.getDueDate())) {
+            throw new BadRequestException("Task already exists for this time");
+        }
+
         Task task=mapToEntity(request);
         Task savedTask = taskRepository.save(task);
 
