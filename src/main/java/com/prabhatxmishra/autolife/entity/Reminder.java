@@ -1,5 +1,6 @@
 package com.prabhatxmishra.autolife.entity;
 
+import com.prabhatxmishra.autolife.enums.RecurrenceType;
 import com.prabhatxmishra.autolife.enums.ReminderStatus;
 import jakarta.persistence.*;
 
@@ -29,6 +30,11 @@ public class Reminder {
     @Column(nullable = false)
     private ReminderStatus status;
 
+    private Integer recurrenceInterval;
+
+    @Enumerated(EnumType.STRING)
+    private RecurrenceType recurrenceType;
+
     @Column(nullable = false)
     private LocalDateTime nextTriggerTime;
 
@@ -41,13 +47,16 @@ public class Reminder {
     }
 
     public Reminder(Long id, String title, Task task, ReminderStatus status,
-                    LocalDateTime nextTriggerTime, LocalDateTime createdAt) {
+                    LocalDateTime nextTriggerTime, LocalDateTime createdAt,
+                    Integer recurrenceInterval, RecurrenceType recurrenceType) {
         this.id = id;
         this.title = title;
         this.task = task;
         this.status = status;
         this.nextTriggerTime = nextTriggerTime;
         this.createdAt = createdAt;
+        this.recurrenceInterval = recurrenceInterval;
+        this.recurrenceType = recurrenceType;
     }
 
     // ===== Builder =====
@@ -63,6 +72,8 @@ public class Reminder {
         private ReminderStatus status;
         private LocalDateTime nextTriggerTime;
         private LocalDateTime createdAt;
+        private Integer recurrenceInterval;
+        private RecurrenceType recurrenceType;
 
         public Builder id(Long id) {
             this.id = id;
@@ -94,8 +105,27 @@ public class Reminder {
             return this;
         }
 
+        public Builder recurrenceInterval(Integer recurrenceInterval) {
+            this.recurrenceInterval = recurrenceInterval;
+            return this;
+        }
+
+        public Builder recurrenceType(RecurrenceType recurrenceType) {
+            this.recurrenceType = recurrenceType;
+            return this;
+        }
+
         public Reminder build() {
-            return new Reminder(id, title, task, status, nextTriggerTime, createdAt);
+            return new Reminder(
+                    id,
+                    title,
+                    task,
+                    status,
+                    nextTriggerTime,
+                    createdAt,
+                    recurrenceInterval,
+                    recurrenceType
+            );
         }
     }
 
@@ -109,7 +139,7 @@ public class Reminder {
         }
     }
 
-    // ===== Getters & Setters =====
+    // ===== Getters =====
 
     public Long getId() {
         return id;
@@ -127,6 +157,14 @@ public class Reminder {
         return status;
     }
 
+    public Integer getRecurrenceInterval() {
+        return recurrenceInterval;
+    }
+
+    public RecurrenceType getRecurrenceType() {
+        return recurrenceType;
+    }
+
     public LocalDateTime getNextTriggerTime() {
         return nextTriggerTime;
     }
@@ -134,6 +172,8 @@ public class Reminder {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
+    // ===== Setters =====
 
     public void setId(Long id) {
         this.id = id;
@@ -149,6 +189,14 @@ public class Reminder {
 
     public void setStatus(ReminderStatus status) {
         this.status = status;
+    }
+
+    public void setRecurrenceInterval(Integer recurrenceInterval) {
+        this.recurrenceInterval = recurrenceInterval;
+    }
+
+    public void setRecurrenceType(RecurrenceType recurrenceType) {
+        this.recurrenceType = recurrenceType;
     }
 
     public void setNextTriggerTime(LocalDateTime nextTriggerTime) {
