@@ -38,6 +38,11 @@ DTO-based APIs, layered design, global exception handling, SLF4J logging
 
 ---
 
+## ⚙️ Validations
+- Request validation using `@Valid`
+- Business validations in service layer
+- Input constraints for safe and consistent data
+
 ## 📡 Swagger
 http://localhost:9091/swagger-ui/index.html
 
